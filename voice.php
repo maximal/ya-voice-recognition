@@ -80,24 +80,41 @@ function recognize($file, $key, $lang = 'ru-RU')
 	curl_setopt($curl, CURLOPT_URL, $url);
 
 	$data = file_get_contents(realpath($file));
+	// MIME
+	// Finfo not working correctly (`audio/mpeg` instead of `audio/x-mpeg-3` etc.)
+	$ext = strtolower(pathinfo(realpath($file), PATHINFO_EXTENSION));
+	switch ($ext) {
+		case 'mp3':
+			$mime = 'audio/x-mpeg-3';
+			break;
+		case 'ogg':
+			$mime = 'audio/ogg';
+			break;
+		default:
+			$mime = 'audio/x-wav';
+	}
 
 	curl_setopt($curl, CURLOPT_POST, true);
 	curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-	curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: audio/x-wav'));
-	//curl_setopt($curl, CURLOPT_VERBOSE, true);
+	curl_setopt($curl, CURLOPT_HTTPHEADER, [
+		'Content-Type: ' . $mime,
+		//'Transfer-Encoding: chunked',
+	]);
+	curl_setopt($curl, CURLOPT_VERBOSE, true);
 	$response = curl_exec($curl);
+
 	$err = curl_errno($curl);
 	curl_close($curl);
 	if ($err) {
-		throw new exception("curl err $err");
+		throw new \Exception('cURL error: ' . $err);
 	}
 
 	$results = new SimpleXMLElement($response);
 	foreach ($results->variant as $variant) {
-		echo 'Достоверность: ', ($variant['confidence'] * 100), '%', PHP_EOL;
+		echo 'Достоверность: ', (100.0 * floatval($variant['confidence'])), '%', PHP_EOL;
 		echo $variant, PHP_EOL, PHP_EOL;
 	}
 }
