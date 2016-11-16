@@ -16,9 +16,9 @@
 
 
 if (count($argv) < 3) {
-	echo '        Распознавание русской речи        © MaximAL 2016        https://github.com/maximal', PHP_EOL;
-	echo '        ==========================', PHP_EOL, PHP_EOL;
-	echo 'Использование:  ', $argv[0], '  <файл для распознавания.WAV>  <АПИ-ключ>  <язык>', PHP_EOL, PHP_EOL;
+	echo '        Распознавание речи Яндексом       © MaximAL 2016        https://github.com/maximal', PHP_EOL;
+	echo '        ===========================', PHP_EOL, PHP_EOL;
+	echo 'Использование:  php ', $argv[0], '  <файл для распознавания.WAV>  <АПИ-ключ>  <язык>', PHP_EOL, PHP_EOL;
 	echo 'Параметры: ', PHP_EOL;
 	echo "\t", '<файл для распознавания.WAV>    в формате `audio/x-pcm`, 16 бит, 16000 Гц (один канал)', PHP_EOL;
 	echo "\t", '<АПИ-ключ>                      можно получить по ссылке https://developer.tech.yandex.ru', PHP_EOL;
